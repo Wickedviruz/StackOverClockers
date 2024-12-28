@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-# Ladda miljövariabler från .env-filen
+# Load env-variabels from the  .env-file
 basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(basedir, '.env'))
 

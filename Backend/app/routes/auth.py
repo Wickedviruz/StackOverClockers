@@ -1,14 +1,41 @@
+"""
+Authentication Blueprint for user registration, login, and admin access.
+
+This module provides:
+- User registration functionality.
+- User login functionality with JWT authentication.
+- Admin-restricted access routes.
+"""
+
+# External imports
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token
 from sqlalchemy import func
-from .. import db
-from ..models import User
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 
+# Internal imports
+from .. import db
+from ..models import User
+
+# Define the Blueprint
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
+
 def admin_required(fn):
+    """
+    Restrict access to admin users only.
+
+    Decorator that:
+    - Requires a valid JWT token.
+    - Checks if the user associated with the token is an admin.
+
+    Args:
+        fn (function): The route function to wrap.
+
+    Returns:
+        function: The wrapped route function, restricted to admins.
+    """
     @wraps(fn)
     @jwt_required()
     def wrapper(*args, **kwargs):
@@ -19,8 +46,21 @@ def admin_required(fn):
         return fn(*args, **kwargs)
     return wrapper
 
+
 @bp.route('/register', methods=['POST'])
 def register():
+    """
+    Register a new user.
+
+    - Validates input data (email, username, password).
+    - Ensures email and username are unique.
+    - Hashes the password before storing it in the database.
+    - Creates and saves a new user.
+
+    Returns:
+        201: User registered successfully.
+        400: Missing or invalid input data.
+    """
     data = request.get_json()
     email = data.get('email')
     username = data.get('username')
@@ -44,8 +84,21 @@ def register():
 
     return jsonify({'message': 'User registered successfully'}), 201
 
+
 @bp.route('/login', methods=['POST'])
 def login():
+    """
+    Authenticate a user and provide a JWT token.
+
+    - Validates username and password.
+    - Checks credentials against the database.
+    - Returns a JWT access token if authentication is successful.
+
+    Returns:
+        200: Login successful, returns a JWT token.
+        400: Missing or invalid input data.
+        401: Invalid credentials.
+    """
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
@@ -65,4 +118,14 @@ def login():
 @bp.route('/admin', methods=['GET'])
 @admin_required
 def admin_dashboard():
+    """
+    Admin dashboard route.
+
+    - Restricted to users with admin privileges.
+    - Provides a success message for authorized access.
+
+    Returns:
+        200: Success message for admins.
+        403: Unauthorized access for non-admins.
+    """
     return jsonify({'message': 'Welcome, admin!'}), 200
