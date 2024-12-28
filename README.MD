@@ -33,7 +33,7 @@ StackOverClockers is a full-stack application combining a powerful backend and a
 3. The backend API is available at `http://localhost:5000`.
 
 ## Contributing
-Interested in contributing? Check out [CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines.
+Interested in contributing? Check out [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 This project is licensed under the [MIT License](LICENSE).
