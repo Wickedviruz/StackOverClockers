@@ -1,0 +1,11 @@
+Flask
+Flask-RESTful
+Flask-JWT-Extended
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-Cors
+Flask-Dance
+psycopg2-binary
+openai
+python-dotenv
+Werkzeug
