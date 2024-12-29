@@ -1,12 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Exempel på anpassade stilar */
-body {
-    @apply bg-white text-gray-800 dark:bg-gray-900 dark:text-gray-100;
-  }
-  
-  a {
-    @apply text-blue-600 dark:text-blue-400;
-  }

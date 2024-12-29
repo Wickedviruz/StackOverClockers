@@ -1,12 +1,27 @@
+// frontend/src/pages/Home.tsx
 import React from 'react';
+import HomeBackground from '../components/HomeBackground';
 
 const Home: React.FC = () => {
   return (
-    <div className="max-w-4xl mx-auto mt-10">
-      <h1 className="text-4xl mb-6">Welcome to StackOverClockers</h1>
-      <p className="text-lg">
-      Join our community forum to discuss a wide range of technology topics, share and explore code snippets, and receive assistance with your programming questions through our integrated AI assistant. By blending the collaborative spirit of community-driven platforms with the comprehensive Q&A structure of sites like StackOverflow, our platform offers a supportive and dynamic environment for developers of all skill levels.
-      </p>
+    <div className="relative bg-black min-h-screen flex items-center justify-center">
+      <HomeBackground />
+      <div className="relative z-10 text-center text-white">
+        <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl mb-6">
+          Build Smarter. Code Faster.
+        </h1>
+        <p className="text-lg text-gray-300 mb-6">
+          Join our platform to connect with developers, share code, and explore new ideas. Your community awaits.
+        </p>
+        <div className="space-x-4">
+          <button className="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-3 rounded-lg hover:from-indigo-600 hover:to-purple-700">
+            Explore Forum
+          </button>
+          <button className="bg-gray-700 px-6 py-3 rounded-lg hover:bg-gray-600">
+            Learn More
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
