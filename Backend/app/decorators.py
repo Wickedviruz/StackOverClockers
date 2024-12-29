@@ -12,7 +12,6 @@ from flask_jwt_extended import get_jwt_identity
 
 # Internal imports
 from app.models import User, Snippet
-from app import db
 
 
 def snippet_author_or_admin_required(f):

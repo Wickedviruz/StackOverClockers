@@ -6,7 +6,7 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 
 # Local modules imports
-from .routes import auth, forum, snippets, chatgpt, oauth
+
 from config import Config
 
 # Initialize extensions
@@ -27,6 +27,8 @@ def create_app():
     migrate.init_app(app, db)
     jwt.init_app(app)
     CORS(app, supports_credentials=True)
+
+    from .routes import auth, forum, snippets, chatgpt, oauth
 
     # Register blueprints for different application modules
     app.register_blueprint(auth.bp)     #Auth blueprints

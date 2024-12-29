@@ -16,7 +16,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 import openai
 
 # Internal imports
-from app import db
+from .. import db
 from app.models import User
 
 # Define the Blueprint

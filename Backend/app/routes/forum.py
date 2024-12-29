@@ -14,7 +14,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import func
 
 # Internal imports
-from app import db
+from .. import db
 from app.models import Category, Thread, Post, User
 
 # Define the Blueprint

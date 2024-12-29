@@ -17,7 +17,7 @@ from flask_jwt_extended import create_access_token
 from sqlalchemy import func
 
 # Internal imports
-from app import db
+from .. import db
 from app.models import User
 
 # Define the Blueprint
