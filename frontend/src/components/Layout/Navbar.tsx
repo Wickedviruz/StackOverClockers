@@ -1,114 +1,147 @@
-// frontend/src/components/Layout/Navbar.tsx
+// src/components/Layout/Navbar.tsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { FiMoon, FiSun } from 'react-icons/fi';
-
-const TOGGLE_CLASSES =
-  "text-sm font-medium flex items-center gap-2 px-3 md:pl-3 md:pr-3.5 py-3 md:py-1.5 transition-colors relative z-10";
+import { FiSun, FiMoon, FiMenu, FiX } from 'react-icons/fi';
 
 const Navbar: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const [theme, setTheme] = useState<string>(localStorage.getItem('theme') || 'light');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark');
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  const toggleTheme = (selected: string) => {
-    setTheme(selected);
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(prev => !prev);
   };
 
   return (
-    <header className="bg-navbar text-defaultText">
-      <nav className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-        <div className="flex items-center justify-between py-4">
+    <header className="shadow-md">
+      {/* Översta raden */}
+      <div className="bg-[#EDECEB] dark:bg-[#101010] text-gray-700 dark:text-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-10">
           {/* Logo */}
-          <Link to="/" className="text-xl font-semibold text-highlight">
+          <Link to="/" className="text-xl font-semibold dark:text-white">
             StackOverClockers
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
-            <Link to="/forum" className="hover:text-highlight">Forum</Link>
-            <Link to="/snippets" className="hover:text-highlight">Kodsnuttar</Link>
-            <Link to="/chat" className="hover:text-highlight">ChatGPT</Link>
-            <Link to="/about" className="hover:text-highlight">Om Oss</Link>
-            <Link to="/login" className="hover:text-highlight">Logga In</Link>
-            <Link to="/register" className="hover:text-highlight">Registrera</Link>
-            <div className="flex items-center">
-              <SliderToggle selected={theme} setSelected={toggleTheme} />
-            </div>
-          </div>
-
-          {/* Mobile Menu Toggle */}
-          <div className="md:hidden">
+          {/* Tema-växlare och Användarlänkar */}
+          <div className="flex items-center space-x-4">
+            {/* Tema-växlare */}
             <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-defaultText hover:text-highlight focus:outline-none"
+              onClick={toggleTheme}
+              className="text-gray-600 dark:text-gray-200 hover:text-gray-800 dark:hover:text-white focus:outline-none"
+              aria-label="Toggle Theme"
             >
-              <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-              </svg>
+              {theme === 'dark' ? <FiSun size={18} /> : <FiMoon size={18} />}
             </button>
+
+            {/* Registrera och Logga in */}
+            <Link
+              to="/register"
+              className="text-sm font-medium hover:text-gray-800 dark:hover:text-white"
+            >
+              Registrera
+            </Link>
+            <Link
+              to="/login"
+              className="text-sm font-medium hover:text-gray-800 dark:hover:text-white"
+            >
+              Logga in
+            </Link>
           </div>
         </div>
-      </nav>
+      </div>
 
-      {/* Mobile Navigation */}
-      {isOpen && (
-        <div className="md:hidden bg-navbar">
-          <nav className="space-y-4 px-6 pb-4">
-            <Link to="/forum" className="block hover:text-highlight">Forum</Link>
-            <Link to="/snippets" className="block hover:text-highlight">Kodsnuttar</Link>
-            <Link to="/chat" className="block hover:text-highlight">ChatGPT</Link>
-            <Link to="/about" className="block hover:text-highlight">Om Oss</Link>
-            <Link to="/login" className="block hover:text-highlight">Logga In</Link>
-            <Link to="/register" className="block hover:text-highlight">Registrera</Link>
-            <div className="flex justify-center">
-              <SliderToggle selected={theme} setSelected={toggleTheme} />
+      {/* Understa raden */}
+      <div className="bg-white dark:bg-[#1C1C1C]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <nav className="flex justify-between items-center h-12">
+            {/* Navigeringslänkar */}
+            <div className="hidden md:flex space-x-6">
+              <Link
+                to="/forum"
+                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+              >
+                Forum
+              </Link>
+              <Link
+                to="/articles"
+                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+              >
+                Artiklar
+              </Link>
+              <Link
+                to="/snippets"
+                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+              >
+                Code snippets
+              </Link>
+              <Link
+                to="/news"
+                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+              >
+                Nyheter
+              </Link>
             </div>
+
+            {/* Hamburgerikon för mobil */}
+            <button
+              onClick={toggleMobileMenu}
+              className="md:hidden text-gray-600 dark:text-gray-200 hover:text-gray-800 dark:hover:text-white focus:outline-none"
+              aria-label="Toggle Menu"
+            >
+              {isMobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+            </button>
+          </nav>
+        </div>
+      </div>
+
+      {/* Mobilmeny */}
+      {isMobileMenuOpen && (
+        <div className="bg-[#EDECEB] dark:bg-[#1C1C1C] md:hidden">
+          <nav className="space-y-2 px-4 py-4">
+            <Link
+              to="/forum"
+              className="block text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Forum
+            </Link>
+            <Link
+              to="/articles"
+              className="block text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Artiklar
+            </Link>
+            <Link
+              to="/reviews"
+              className="block text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Tester
+            </Link>
+            <Link
+              to="/news"
+              className="block text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Nyheter
+            </Link>
           </nav>
         </div>
       )}
     </header>
-  );
-};
-
-const SliderToggle = ({ selected, setSelected }: { selected: string; setSelected: (value: string) => void }) => {
-  return (
-    <div className="relative flex w-fit items-center rounded-full">
-      <button
-        className={`${TOGGLE_CLASSES} ${
-          selected === 'light' ? 'text-white' : 'text-slate-300'
-        }`}
-        onClick={() => setSelected('light')}
-      >
-        <FiSun className="relative z-10 text-lg md:text-sm" />
-        <span className="relative z-10">Light</span>
-      </button>
-      <button
-        className={`${TOGGLE_CLASSES} ${
-          selected === 'dark' ? 'text-white' : 'text-slate-800'
-        }`}
-        onClick={() => setSelected('dark')}
-      >
-        <FiMoon className="relative z-10 text-lg md:text-sm" />
-        <span className="relative z-10">Dark</span>
-      </button>
-      <div
-        className={`absolute inset-0 z-0 flex ${
-          selected === 'dark' ? 'justify-end' : 'justify-start'
-        }`}
-      >
-        <motion.span
-          layout
-          transition={{ type: 'spring', damping: 15, stiffness: 250 }}
-          className="h-full w-1/2 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600"
-        />
-      </div>
-    </div>
   );
 };
 

@@ -1,15 +1,30 @@
-import React from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
-import { ThemeProvider } from './context/ThemeContext'
-import Footer from './components/Layout/Footer.tsx'
+// frontend/src/index.tsx
+import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { AuthProvider } from './AuthContext';
 
-createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <ThemeProvider>
-      <App />
-      <Footer />
-    </ThemeProvider>
-  </React.StrictMode>,
-)
+const Root: React.FC = () => {
+  const [themeMode, setThemeMode] = useState<string>(
+    localStorage.getItem('theme') || 'dark'
+  );
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle('dark', themeMode === 'dark');
+  }, [themeMode]);
+
+  return (
+    <React.StrictMode>
+      <Router>
+        <AuthProvider>
+            <App />
+        </AuthProvider>
+      </Router>
+    </React.StrictMode>
+  );
+};
+
+ReactDOM.render(<Root />, document.getElementById('root'));

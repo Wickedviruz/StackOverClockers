@@ -1,53 +1,52 @@
+// src/App.tsx
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
+
 import Navbar from './components/Layout/Navbar';
-import Home from './pages/Home';
-import Register from './components/Auth/Register';
+import Footer from './components/Layout/Footer';
+
 import Login from './components/Auth/Login';
-import ForumHome from './pages/ForumHome';
-import CategoryPage from './pages/CategoryPage';
-import ThreadPage from './pages/ThreadPage';
-import Snippets from './components/Snippets/SnippetList';
-import SnippetDetail from './components/Snippets/SnippetDetail';
-import CreateSnippet from './components/Snippets/CreateSnippet';
-import Chat from './components/ChatGPT/Chat';
-import AdminCategoryManagement from './components/Admin/AdminCategoryManagement';
-import PrivateRoute from './components/PrivateRoute';
+import Register from './components/Auth/Register';
+import OAuthLogin from './components/Auth/OAuthLogin';
+
+import Home from './pages/Home';
+import CreateNews from './pages/CreateNews';
+
+import ForumOverview from './pages/ForumOverview';
+import ThreadList from './pages/ThreadList';
+import ThreadView from './pages/ThreadView';
+
+import CodeSnippets from './pages/CodeSnippets';
+import CreateSnippet from './pages/CreateSnippet';
+// Lägg till fler sidor som behövs
 
 const App: React.FC = () => {
   return (
-    <Router>
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      <Routes>
-        {/* Allmänna Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+      <main className="flex-grow">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/news/create" element={<CreateNews />} />
 
-        {/* Forum Routing */}
-        <Route path="/forum" element={<ForumHome />} />
-        <Route path="/forum/categories/:categoryId" element={<CategoryPage />} />
-        <Route path="/forum/threads/:threadId" element={<ThreadPage />} />
+          
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/oauth" element={<OAuthLogin />} />
 
-        {/* Admin Routing - Skyddade Routes */}
-        <Route
-          path="/admin/categories"
-          element={
-            <PrivateRoute adminOnly={true}>
-              <AdminCategoryManagement />
-            </PrivateRoute>
-          }
-        />
 
-        {/* Kodsnuttar Routing */}
-        <Route path="/snippets" element={<Snippets />} />
-        <Route path="/snippets/create" element={<CreateSnippet />} />
-        <Route path="/snippets/:id" element={<SnippetDetail />} />
+          <Route path="/forum" element={<ForumOverview />} />
+          <Route path="/forum/category/:id" element={<ThreadList />} />
+          <Route path="/forum/thread/:id" element={<ThreadView />} />
 
-        {/* ChatGPT Routing */}
-        <Route path="/chat" element={<Chat />} />
-      </Routes>
-    </Router>
+          <Route path="/snippets" element={<CodeSnippets />} />
+          <Route path="/snippets/create" element={<CreateSnippet />} />
+
+          {/* Andra routes */}
+        </Routes>
+      </main>
+      <Footer />
+    </div>
   );
 };
 

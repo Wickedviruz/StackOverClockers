@@ -1,3 +1,9 @@
+/* src/index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Anpassade stilar om nödvändigt */
+body {
+  @apply bg-gray-900 text-white dark:bg-white dark:text-gray-800;
+}
