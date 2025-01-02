@@ -100,6 +100,24 @@ def get_all_news():
     }), 200
 
 
+@bp.route('/<int:news_id>', methods=['GET'])
+def get_news_by_id(news_id):
+    """
+    Fetch a single news article by ID.
+    """
+    news = News.query.get_or_404(news_id)
+    return jsonify({
+        'id': news.id,
+        'title': news.title,
+        'content': news.content,
+        'author': {
+            'id': news.user_id,
+            'username': news.author.username
+        },
+        'created_at': news.created_at
+    }), 200
+
+
 @bp.route('/<int:news_id>', methods=['DELETE'])
 @news_admin_required
 def delete_news(news_id):

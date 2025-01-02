@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-white dark:bg-[#1C1C1C] text-gray-700 dark:text-gray-200 border-t border-gray-300 dark:border-gray-700">
+    <footer className="bg-[#FFFFFF] dark:bg-[#1C1C1C] text-gray-700 dark:text-gray-200 border-t border-gray-300 dark:border-[#3B3B3B]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 ">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Om Oss */}
@@ -92,7 +92,7 @@ const Footer: React.FC = () => {
             <p className="text-sm">+46 123 456 789</p>
           </div>
         </div>
-        <div className="mt-8 border-t border-gray-300 dark:border-gray-700 pt-4">
+        <div className="mt-8 border-t border-gray-300 dark:border-[#3B3B3B] pt-4">
           <p className="text-sm text-center">
             &copy; 2024 StackOverClockers. Alla rättigheter förbehållna.
           </p>

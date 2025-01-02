@@ -2,55 +2,67 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
 
+interface User {
+  username: string;
+  role: string;
+}
+
 interface AuthContextType {
-  user: any;
-  setUser: (user: any) => void;
-  login: (email: string, password: string) => Promise<void>;
+  user: User | null;
+  setUser: (user: User | null) => void;
+  login: (username: string, password: string) => Promise<void>;
   register: (username: string, email: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const API_URL = import.meta.env.VITE_API_URL;
 
 interface AuthProviderProps {
   children: ReactNode;
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      axios.get('/api/profile', {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      .then(response => {
-        setUser(response.data.user);
-      })
-      .catch(() => {
-        localStorage.removeItem('token');
-        setUser(null);
-      });
+    const token = localStorage.getItem('access_token');
+    const username = localStorage.getItem('username');
+    const role = localStorage.getItem('role');
+
+    if (token && username && role) {
+      setUser({ username, role });
     }
   }, []);
 
-  const login = async (email: string, password: string) => {
-    const response = await axios.post('/api/login', { email, password });
-    localStorage.setItem('token', response.data.access_token);
-    const profile = await axios.get('/api/profile', {
-      headers: { Authorization: `Bearer ${response.data.access_token}` }
-    });
-    setUser(profile.data.user);
+  const login = async (username: string, password: string) => {
+    
+    try {
+      const response = await axios.post(`${API_URL}/auth/login`, { username, password });
+      const { access_token, username: fetchedUsername, role } = response.data;
+  
+      localStorage.setItem('access_token', access_token);
+      localStorage.setItem('username', fetchedUsername);
+      localStorage.setItem('role', role);
+  
+      setUser({ username: fetchedUsername, role });
+      console.log('Login successful, user set:', { username: fetchedUsername, role });
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    }
   };
+  
 
   const register = async (username: string, email: string, password: string) => {
-    await axios.post('/api/register', { username, email, password });
-    await login(email, password);
+    await axios.post(`${API_URL}/auth/register`, { username, email, password });
+    await login(username, password); // Logga in automatiskt efter registrering
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('username');
+    localStorage.removeItem('role');
     setUser(null);
   };
 

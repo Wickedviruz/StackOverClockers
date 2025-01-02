@@ -1,39 +1,111 @@
 // src/pages/Register.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast} from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import api from '../../services/api';
 
 const Register: React.FC = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [ConfirmPassword, setConfirmPassword] = useState ('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      await api.post('/auth/register', { username, email, password });
-      alert('Registreringen lyckades! Du kan nu logga in.');
-      navigate('/login');
-    } catch (error) {
-      console.error(error);
-      alert('Registrering misslyckades. Kontrollera dina uppgifter.');
-    } finally {
-      setLoading(false);
-    }
-  };
+const validatePassword = (password: string): string | null => {
+  const minLenght = 8;
+  const hasUppercas = /[A-Z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+  if (password.length < minLenght) {
+    return `Password must be atleast ${minLenght} characters long.`;
+  }
+  if (!hasUppercas) {
+    return `Password must contain at least one uppercase letter.`;
+  }
+  if (!hasNumber) {
+    return `Password must contain at least one number.`;
+  }
+  if (!hasSpecialChar) {
+    return `Password must contain at least one special character.`;
+  }
+  return null;
+};
+
+const handleRegister = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
+  if (password !== ConfirmPassword) {
+    toast.error('Passwords do not match.', {
+      position: 'top-right',
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+    setLoading(false);
+    return;
+  }
+
+  const passwordError = validatePassword(password);
+  if (passwordError) {
+    toast.error(passwordError, {
+      position: 'top-right',
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+    setLoading(false);
+    return;
+  }
+
+  try {
+    await api.post('/auth/register', { username, email, password });
+    toast.success('Registration successful! You can now log in.', {
+      position: 'top-right',
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+
+    // Lägg till en fördröjning innan navigationen
+    setTimeout(() => navigate('/login'), 3000);
+  } catch (error) {
+    console.error(error);
+    toast.error('Registration failed. Please check your details.', {
+      position: 'top-right',
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-[#101010] text-gray-900 dark:text-gray-100">
+       <ToastContainer />
       <div className="w-full max-w-md bg-white dark:bg-[#1C1C1C] rounded-lg shadow-lg p-6">
-        <h2 className="text-2xl font-semibold text-center mb-6">Registrera</h2>
+        <h2 className="text-2xl font-semibold text-center mb-6">Register</h2>
         <form onSubmit={handleRegister}>
           {/* Användarnamn */}
           <div className="mb-4">
             <label htmlFor="username" className="block text-sm font-medium mb-2">
-              Användarnamn
+              Username:
             </label>
             <input
               id="username"
@@ -41,14 +113,14 @@ const Register: React.FC = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:focus:ring-blue-400"
+              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#474747] dark:border-[#3B3B3B] dark:bg-[#1C1C1C] dark:focus:ring-white"
             />
           </div>
 
           {/* E-post */}
           <div className="mb-4">
             <label htmlFor="email" className="block text-sm font-medium mb-2">
-              E-postadress
+              E-mail:
             </label>
             <input
               id="email"
@@ -56,14 +128,14 @@ const Register: React.FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:focus:ring-blue-400"
+              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#474747] dark:border-[#3B3B3B] dark:bg-[#1C1C1C] dark:focus:ring-white"
             />
           </div>
 
           {/* Lösenord */}
           <div className="mb-6">
             <label htmlFor="password" className="block text-sm font-medium mb-2">
-              Lösenord
+              Password:
             </label>
             <input
               id="password"
@@ -71,7 +143,20 @@ const Register: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:focus:ring-blue-400"
+              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#474747] dark:border-[#3B3B3B] dark:bg-[#1C1C1C] dark:focus:ring-white"
+            />
+          </div>
+          <div className="mb-6">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2">
+              Confirm password:
+            </label>
+            <input
+              id="ConfirmPassword"
+              type="password"
+              value={ConfirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#474747] dark:border-[#3B3B3B] dark:bg-[#1C1C1C] dark:focus:ring-white"
             />
           </div>
 
@@ -79,23 +164,23 @@ const Register: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-3 text-white font-medium rounded bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 ${
+            className={`w-full py-3 text-white font-medium rounded bg-[#D26000] dark:bg-[#D26000] hover:bg[#ff7505] focus:outline-none focus:ring-2 focus:ring-[#ff7505] dark:focus:ring-[#ff7505] dark:hover:bg-[#ff7505] ${
               loading ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
-            {loading ? 'Registrerar...' : 'Registrera'}
+            {loading ? 'Creating account...' : 'Register'}
           </button>
         </form>
 
         {/* Länk till inloggning */}
         <div className="mt-6 text-center">
           <p className="text-sm">
-            Har du redan ett konto?{' '}
+            Already have an account?{' '}
             <a
               href="/login"
-              className="text-blue-500 hover:underline dark:text-blue-400"
+              className="text-[#D26000] hover:underline dark:text-[#D26000]"
             >
-              Logga in
+              Sign in
             </a>
           </p>
         </div>

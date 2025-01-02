@@ -27,13 +27,24 @@ const Home: React.FC = () => {
     // Hämta nyheter
     const fetchNews = async () => {
       try {
-        const response = await api.get('/news', { params: { page } });
-        setNews(response.data.news);
-        setTotalPages(response.data.totalPages);
+        const response = await api.get('/news/?page=1');
+        console.log('Fetched news:', response.data);
+    
+        const formattedNews = response.data.news.map((item: any) => ({
+          id: item.id,
+          title: item.title,
+          excerpt: item.content.length > 100 ? item.content.substring(0, 100) + '...' : item.content,
+          author: item.author.username, // Hantera förväntat format
+          created_at: item.created_at,
+        }));
+    
+        setNews(formattedNews);
+        setTotalPages(response.data.pages);
       } catch (error) {
         console.error('Failed to fetch news:', error);
       }
     };
+    
 
     // Hämta senaste forumtrådarna
     const fetchForumThreads = async () => {
@@ -50,7 +61,7 @@ const Home: React.FC = () => {
   }, [page]);
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-[#101010] text-gray-900 dark:text-gray-100">
+    <div className="min-h-screen bg-[#EDECEB] dark:bg-[#101010] text-gray-900 dark:text-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Nyheter */}

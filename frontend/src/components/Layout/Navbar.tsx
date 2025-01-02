@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { FiSun, FiMoon, FiMenu, FiX } from 'react-icons/fi';
-import api from '../../services/api';
+import { AuthContext } from '../../AuthContext';
 
 const Navbar: React.FC = () => {
+  const { user, logout } = useContext(AuthContext)!; // Hämta användardata och logout från AuthContext
   const [theme, setTheme] = useState<string>(localStorage.getItem('theme') || 'light');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
-  const [role, setRole] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (theme === 'dark') {
@@ -17,20 +18,6 @@ const Navbar: React.FC = () => {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  useEffect(() => {
-    const fetchUserRole = async () => {
-      try {
-        const response = await api.get('/user/role');
-        setRole(response.data.role);
-      } catch (error) {
-        console.error('Failed to fetch user role:', error);
-        setRole(null);
-      }
-    };
-
-    fetchUserRole();
-  }, []);
-
   const toggleTheme = () => {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
   };
@@ -39,14 +26,18 @@ const Navbar: React.FC = () => {
     setIsMobileMenuOpen(prev => !prev);
   };
 
+  const handleLogout = () => {
+    logout(); // Anropa AuthContext logout
+    navigate('/login');
+  };
   return (
     <header className="shadow-md">
       {/* Översta raden */}
-      <div className="bg-[#EDECEB] dark:bg-[#101010] text-gray-700 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700">
+      <div className="bg-[#EDECEB] dark:bg-[#101010] text-gray-700 dark:text-gray-200 border-b border-gray-300 dark:border-[#3B3B3B]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-10">
           {/* Logo */}
           <Link to="/" className="text-xl font-semibold dark:text-white">
-            StackOverClockers
+          TechTalkers
           </Link>
 
           {/* Tema-växlare och Användarlänkar */}
@@ -59,73 +50,89 @@ const Navbar: React.FC = () => {
               {theme === 'dark' ? <FiSun size={18} /> : <FiMoon size={18} />}
             </button>
 
-            <Link
-              to="/register"
-              className="text-sm font-medium hover:text-gray-800 dark:hover:text-white border border-gray-400 dark:border-gray-600 hover:border-gray-800 dark:hover:border-white px-2 py-1 rounded"
-            >
-              Registrera
-            </Link>
-            <Link
-              to="/login"
-              className="text-sm font-medium hover:text-gray-800 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-800 px-2 py-2"
-            >
-              Logga in
-            </Link>
+            {user ? (
+              <>
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                  Välkommen, {user.username}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="text-sm font-medium text-white hover:text-white dark:hover:text-white bg-[#D26000] dark:bg-[#D26000] border border-gray-400 dark:border-[#3B3B3B] hover:border-gray-800 dark:hover:border-white px-2 py-1 rounded"
+                >
+                  Logga ut
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/register"
+                  className="text-sm font-medium hover:text-gray-800 dark:hover:text-white border border-gray-400 dark:border-[#3B3B3B] hover:border-gray-800 dark:hover:border-white px-2 py-1 rounded"
+                >
+                  Registrera
+                </Link>
+                <Link
+                  to="/login"
+                  className="text-sm font-medium text-white hover:text-white dark:hover:text-white bg-[#D26000] dark:bg-[#D26000] border border-gray-400 dark:border-[#3B3B3B] hover:border-gray-800 dark:hover:border-white px-2 py-1 rounded"
+                >
+                  Logga in
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
 
       {/* Understa raden */}
-      <div className="bg-white dark:bg-[#1C1C1C] border-b border-gray-300 dark:border-gray-700">
+      <div className="bg-[#FFFFFF] dark:bg-[#1C1C1C] border-b border-gray-300 dark:border-[#3B3B3B]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex justify-between items-center h-12">
-            <div className="hidden md:flex space-x-6">
+            <div className="hidden md:flex">
               <Link
                 to="/"
-                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-[#282828] px-2 py-2"
+                className="flex items-center justify-center h-12 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-[#EDECEB] dark:hover:bg-[#282828] px-4"
               >
                 Home
               </Link>
               <Link
                 to="/forum"
-                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+                className="flex items-center justify-center h-12 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-[#EDECEB] dark:hover:bg-[#282828] px-4"
               >
                 Forum
               </Link>
               <Link
                 to="/snippets"
-                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+                className="flex items-center justify-center h-12 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-[#EDECEB] dark:hover:bg-[#282828] px-4"
               >
                 Code snippets
               </Link>
               <Link
                 to="/news"
-                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+                className="flex items-center justify-center h-12 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-[#EDECEB] dark:hover:bg-[#282828] px-4"
               >
                 News
               </Link>
-              {role && (
+              {user?.role && (
                 <>
-                  {(role === 'forum_admin' || role === 'super_admin') && (
+                  {(user.role === 'forum_admin' || user.role === 'super_admin') && (
                     <Link
                       to="/admin/forum"
-                      className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+                      className="flex items-center justify-center h-12 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-[#EDECEB] dark:hover:bg-[#282828] px-4"
                     >
                       Forum Admin
                     </Link>
                   )}
-                  {(role === 'news_admin' || role === 'super_admin') && (
+                  {(user.role === 'news_admin' || user.role === 'super_admin') && (
                     <Link
                       to="/admin/news"
-                      className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+                      className="flex items-center justify-center h-12 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-[#EDECEB] dark:hover:bg-[#282828] px-4"
                     >
                       News Admin
                     </Link>
                   )}
-                  {role === 'super_admin' && (
+                  {user.role === 'super_admin' && (
                     <Link
                       to="/admin/users"
-                      className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+                      className="flex items-center justify-center h-12 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-[#EDECEB] dark:hover:bg-[#282828] px-4"
                     >
                       User Admin
                     </Link>
@@ -143,6 +150,7 @@ const Navbar: React.FC = () => {
           </nav>
         </div>
       </div>
+
 
       {/* Mobilmeny */}
       {isMobileMenuOpen && (
@@ -169,9 +177,9 @@ const Navbar: React.FC = () => {
             >
               News
             </Link>
-            {role && (
+            {user?.role && (
               <>
-                {(role === 'forum_admin' || role === 'super_admin') && (
+                {(user.role === 'forum_admin' || user.role === 'super_admin') && (
                   <Link
                     to="/admin/forum"
                     className="block text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
@@ -180,7 +188,7 @@ const Navbar: React.FC = () => {
                     Forum Admin
                   </Link>
                 )}
-                {(role === 'news_admin' || role === 'super_admin') && (
+                {(user.role === 'news_admin' || user.role === 'super_admin') && (
                   <Link
                     to="/admin/news"
                     className="block text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
@@ -189,7 +197,7 @@ const Navbar: React.FC = () => {
                     News Admin
                   </Link>
                 )}
-                {role === 'super_admin' && (
+                {user.role === 'super_admin' && (
                   <Link
                     to="/admin/users"
                     className="block text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"

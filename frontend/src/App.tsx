@@ -14,6 +14,7 @@ import OAuthLogin from './components/Auth/OAuthLogin';
 
 /* Home */
 import Home from './pages/Home';
+import NewsDetail from './pages/NewsDetail';
 
 /* Forum */
 import ForumOverview from './pages/ForumOverview';
@@ -37,6 +38,7 @@ const App: React.FC = () => {
         <Routes>
           {/* Home */}
           <Route path="/" element={<Home />} />
+          <Route path="/news/:id" element={<NewsDetail />} />
 
           {/* Admin routes */}
           <Route path="/admin/news" element={<AdminNews />} />

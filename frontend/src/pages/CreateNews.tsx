@@ -1,24 +1,25 @@
-// src/pages/CreateNews.tsx
 import React, { useState } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import api from '../services/api';
-import { useNavigate } from 'react-router-dom';
 
 const CreateNews: React.FC = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
     try {
       await api.post('/news', { title, content });
-      alert('Nyheten har skapats!');
-      navigate('/admin/news');
+      alert('News created successfully!');
+      setTitle('');
+      setContent('');
     } catch (error) {
       console.error('Failed to create news:', error);
-      alert('Misslyckades med att skapa nyhet.');
+      alert('Failed to create news. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -26,48 +27,49 @@ const CreateNews: React.FC = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-[#101010] text-gray-900 dark:text-gray-100">
-      <div className="w-full max-w-lg bg-white dark:bg-[#1C1C1C] rounded-lg shadow-lg p-6">
-        <h2 className="text-2xl font-semibold text-center mb-6">Skapa Nyhet</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="title" className="block text-sm font-medium mb-2">
-              Titel
-            </label>
-            <input
-              id="title"
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-              className="w-full p-3 border border-gray-300 rounded dark:border-gray-700 dark:bg-gray-800"
-            />
-          </div>
+    <div className="max-w-3xl mx-auto mt-10 p-6 bg-white dark:bg-[#1C1C1C] rounded shadow-lg">
+      <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-100">Create News</h2>
+      <form onSubmit={handleSubmit}>
+        {/* Title */}
+        <div className="mb-4">
+          <label htmlFor="title" className="block text-sm font-medium mb-2">
+            Title:
+          </label>
+          <input
+            id="title"
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+            className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#474747] dark:border-[#3B3B3B] dark:bg-[#1C1C1C] dark:focus:ring-white dark:text-white"
+          />
+        </div>
 
-          <div className="mb-6">
-            <label htmlFor="content" className="block text-sm font-medium mb-2">
-              Innehåll
-            </label>
-            <textarea
-              id="content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              required
-              rows={5}
-              className="w-full p-3 border border-gray-300 rounded dark:border-gray-700 dark:bg-gray-800"
-            ></textarea>
-          </div>
+        {/* Content */}
+        <div className="mb-4">
+          <label htmlFor="content" className="block text-sm font-medium mb-2">
+            Content:
+          </label>
+          <ReactQuill
+            value={content}
+            onChange={setContent}
+            className="bg-white dark:bg-[#1C1C1C] dark:text-white dark:border-[#3B3B3B]"
+            style={{ height: '300px' }}
+          />
+        </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full py-3 text-white font-medium rounded bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              loading ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-          >
-            {loading ? 'Skapar...' : 'Skapa'}
-          </button>
-        </form>
-      </div>
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full py-3 text-white font-medium rounded bg-[#D26000] dark:bg-[#D26000] hover:bg-[#ff7505] focus:outline-none focus:ring-2 focus:ring-[#ff7505] dark:focus:ring-[#ff7505] ${
+            loading ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
+        >
+          {loading ? 'Creating News...' : 'Create News'}
+        </button>
+      </form>
+    </div>
     </div>
   );
 };
