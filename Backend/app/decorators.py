@@ -5,12 +5,10 @@ This module provides:
 - A decorator to ensure that only snippet authors or admin users can access specific routes.
 """
 
-# External imports
 from functools import wraps
 from flask import jsonify
 from flask_jwt_extended import get_jwt_identity
 
-# Internal imports
 from app.models import User, Snippet
 
 
@@ -22,7 +20,7 @@ def snippet_author_or_admin_required(f):
     - Checks if the user is authenticated.
     - Ensures the user exists in the database.
     - Validates that the snippet exists.
-    - Verifies that the user is either the snippet's author or an admin.
+    - Verifies that the user is either the snippet's author or an admin (any admin role).
 
     Args:
         f (function): The route function to wrap.
@@ -51,7 +49,7 @@ def snippet_author_or_admin_required(f):
             return jsonify({'message': 'Snippet not found'}), 404
 
         # Check if the user is either the snippet's author or an admin
-        if snippet.user_id != user_id and not user.is_admin:
+        if snippet.user_id != user_id and user.role not in ['forum_admin', 'news_admin', 'super_admin']:
             return jsonify({'message': 'Unauthorized'}), 403
 
         # Proceed with the wrapped function

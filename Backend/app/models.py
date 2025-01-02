@@ -91,3 +91,19 @@ class News(db.Model):
     content = db.Column(db.Text, nullable=False)  # Content of the news article
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Foreign key to User (author)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Timestamp when the news article is created
+
+class Comment(db.Model):
+    """
+    Comment model to store user comments on threads and news.
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    thread_id = db.Column(db.Integer, db.ForeignKey('thread.id'), nullable=True)
+    news_id = db.Column(db.Integer, db.ForeignKey('news.id'), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Relationships
+    author = db.relationship('User', backref='comments')
+    thread = db.relationship('Thread', backref='comments')
+    news = db.relationship('News', backref='comments')

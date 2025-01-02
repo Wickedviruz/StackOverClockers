@@ -15,7 +15,7 @@ from sqlalchemy import func
 
 # Internal imports
 from .. import db
-from app.models import Category, Thread, Post, User
+from app.models import Category, Thread, Post, User, Comment
 
 # Define the Blueprint
 bp = Blueprint('forum', __name__, url_prefix='/forum')
@@ -256,3 +256,61 @@ def delete_post(post_id):
     db.session.commit()
 
     return jsonify({'message': 'Post deleted successfully'}), 200
+
+@bp.route('/threads/<int:thread_id>/comments', methods=['POST'])
+@jwt_required()
+def create_comment_in_thread(thread_id):
+    """
+    Add a comment to a thread.
+
+    Args:
+        thread_id (int): ID of the thread.
+
+    Returns:
+        201: Comment created successfully.
+        404: Thread not found.
+    """
+    thread = Thread.query.get_or_404(thread_id)
+    data = request.get_json()
+    content = data.get('content')
+
+    if not content:
+        return jsonify({'message': 'Comment content is required'}), 400
+
+    user_id = get_jwt_identity()
+    new_comment = Comment(content=content, user_id=user_id, thread_id=thread.id)
+    db.session.add(new_comment)
+    db.session.commit()
+
+    return jsonify({
+        'message': 'Comment created successfully',
+        'comment': {
+            'id': new_comment.id,
+            'content': new_comment.content,
+            'author': new_comment.author.username,
+            'created_at': new_comment.created_at
+        }
+    }), 201
+
+@bp.route('/threads/<int:thread_id>/comments', methods=['GET'])
+def get_comments_in_thread(thread_id):
+    """
+    Fetch all comments in a thread.
+
+    Args:
+        thread_id (int): ID of the thread.
+
+    Returns:
+        200: List of comments.
+    """
+    thread = Thread.query.get_or_404(thread_id)
+    comments = Comment.query.filter_by(thread_id=thread.id).order_by(Comment.created_at.asc()).all()
+
+    result = [{
+        'id': comment.id,
+        'content': comment.content,
+        'author': comment.author.username,
+        'created_at': comment.created_at
+    } for comment in comments]
+
+    return jsonify(result), 200

@@ -35,21 +35,25 @@ const App: React.FC = () => {
       <Navbar />
       <main className="flex-grow">
         <Routes>
+          {/* Home */}
           <Route path="/" element={<Home />} />
+
+          {/* Admin routes */}
           <Route path="/admin/news" element={<AdminNews />} />
           <Route path="/admin/news/create" element={<CreateNews />} />
           <Route path="/admin/news/edit/:id" element={<EditNews />} />
 
-          
+          {/* Auth routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/oauth" element={<OAuthLogin />} />
 
-
+          {/* Forum routes */}
           <Route path="/forum" element={<ForumOverview />} />
           <Route path="/forum/category/:id" element={<ThreadList />} />
           <Route path="/forum/thread/:id" element={<ThreadView />} />
 
+          {/* CodeSnippet routes */}
           <Route path="/snippets" element={<CodeSnippets />} />
           <Route path="/snippets/create" element={<CreateSnippet />} />
 
