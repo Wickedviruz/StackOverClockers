@@ -1,4 +1,3 @@
-// src/components/Layout/Navbar.tsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiSun, FiMoon, FiMenu, FiX } from 'react-icons/fi';
@@ -7,10 +6,9 @@ import api from '../../services/api';
 const Navbar: React.FC = () => {
   const [theme, setTheme] = useState<string>(localStorage.getItem('theme') || 'light');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
-  const [role, setRole] = useState<string | null>(null); // Lagra användarens roll
+  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
-    // Hantera tema
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
@@ -20,14 +18,13 @@ const Navbar: React.FC = () => {
   }, [theme]);
 
   useEffect(() => {
-    // Hämta användarens roll från backend
     const fetchUserRole = async () => {
       try {
-        const response = await api.get('/user/role'); // Backend endpoint för roll
+        const response = await api.get('/user/role');
         setRole(response.data.role);
       } catch (error) {
         console.error('Failed to fetch user role:', error);
-        setRole(null); // Om begäran misslyckas
+        setRole(null);
       }
     };
 
@@ -45,7 +42,7 @@ const Navbar: React.FC = () => {
   return (
     <header className="shadow-md">
       {/* Översta raden */}
-      <div className="bg-[#EDECEB] dark:bg-[#101010] text-gray-700 dark:text-gray-200">
+      <div className="bg-[#EDECEB] dark:bg-[#101010] text-gray-700 dark:text-gray-200 border-b border-gray-300 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-10">
           {/* Logo */}
           <Link to="/" className="text-xl font-semibold dark:text-white">
@@ -54,7 +51,6 @@ const Navbar: React.FC = () => {
 
           {/* Tema-växlare och Användarlänkar */}
           <div className="flex items-center space-x-4">
-            {/* Tema-växlare */}
             <button
               onClick={toggleTheme}
               className="text-gray-600 dark:text-gray-200 hover:text-gray-800 dark:hover:text-white focus:outline-none"
@@ -63,16 +59,15 @@ const Navbar: React.FC = () => {
               {theme === 'dark' ? <FiSun size={18} /> : <FiMoon size={18} />}
             </button>
 
-            {/* Registrera och Logga in */}
             <Link
               to="/register"
-              className="text-sm font-medium hover:text-gray-800 dark:hover:text-white"
+              className="text-sm font-medium hover:text-gray-800 dark:hover:text-white border border-gray-400 dark:border-gray-600 hover:border-gray-800 dark:hover:border-white px-2 py-1 rounded"
             >
               Registrera
             </Link>
             <Link
               to="/login"
-              className="text-sm font-medium hover:text-gray-800 dark:hover:text-white"
+              className="text-sm font-medium hover:text-gray-800 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-800 px-2 py-2"
             >
               Logga in
             </Link>
@@ -81,14 +76,13 @@ const Navbar: React.FC = () => {
       </div>
 
       {/* Understa raden */}
-      <div className="bg-white dark:bg-[#1C1C1C]">
+      <div className="bg-white dark:bg-[#1C1C1C] border-b border-gray-300 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex justify-between items-center h-12">
-            {/* Navigeringslänkar */}
             <div className="hidden md:flex space-x-6">
               <Link
                 to="/"
-                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-[#282828] px-2 py-2"
               >
                 Home
               </Link>
@@ -110,7 +104,6 @@ const Navbar: React.FC = () => {
               >
                 News
               </Link>
-              {/* Admin-meny */}
               {role && (
                 <>
                   {(role === 'forum_admin' || role === 'super_admin') && (
@@ -140,8 +133,6 @@ const Navbar: React.FC = () => {
                 </>
               )}
             </div>
-
-            {/* Hamburgerikon för mobil */}
             <button
               onClick={toggleMobileMenu}
               className="md:hidden text-gray-600 dark:text-gray-200 hover:text-gray-800 dark:hover:text-white focus:outline-none"
@@ -176,9 +167,8 @@ const Navbar: React.FC = () => {
               className="block text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Nyheter
+              News
             </Link>
-            {/* Admin-meny för mobil */}
             {role && (
               <>
                 {(role === 'forum_admin' || role === 'super_admin') && (

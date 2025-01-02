@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-white dark:bg-[#1C1C1C] text-gray-700 dark:text-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <footer className="bg-white dark:bg-[#1C1C1C] text-gray-700 dark:text-gray-200 border-t border-gray-300 dark:border-gray-700">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 ">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Om Oss */}
           <div>
