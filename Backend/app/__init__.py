@@ -28,7 +28,7 @@ def create_app():
     jwt.init_app(app)
     CORS(app, supports_credentials=True)
 
-    from .routes import auth, forum, snippets, chatgpt, oauth
+    from .routes import auth, forum, snippets, chatgpt, oauth, news
 
     # Register blueprints for different application modules
     app.register_blueprint(auth.bp)     #Auth blueprints
@@ -36,5 +36,6 @@ def create_app():
     app.register_blueprint(snippets.bp) #Codesnippets blueprints
     app.register_blueprint(chatgpt.bp)  #Chatgpt blueprints
     app.register_blueprint(oauth.bp)    #OAuth blueprints
+    app.register_blueprint(news.bp)    #OAuth blueprints
 
     return app

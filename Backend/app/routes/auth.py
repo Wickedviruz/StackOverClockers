@@ -1,50 +1,36 @@
-"""
-Authentication Blueprint for user registration, login, and admin access.
-
-This module provides:
-- User registration functionality.
-- User login functionality with JWT authentication.
-- Admin-restricted access routes.
-"""
-
-# External imports
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token
 from sqlalchemy import func
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# Internal imports
 from .. import db
 from ..models import User
 
-# Define the Blueprint
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
-def admin_required(fn):
+def role_required(roles):
     """
-    Restrict access to admin users only.
-
-    Decorator that:
-    - Requires a valid JWT token.
-    - Checks if the user associated with the token is an admin.
+    Restrict access to specific user roles.
 
     Args:
-        fn (function): The route function to wrap.
+        roles (list): List of allowed roles.
 
     Returns:
-        function: The wrapped route function, restricted to admins.
+        function: Decorator for role-based access control.
     """
-    @wraps(fn)
-    @jwt_required()
-    def wrapper(*args, **kwargs):
-        user_id = get_jwt_identity()
-        user = User.query.get(user_id)
-        if not user or not user.is_admin:
-            return jsonify({'message': 'Admins only!'}), 403
-        return fn(*args, **kwargs)
-    return wrapper
+    def decorator(fn):
+        @wraps(fn)
+        @jwt_required()
+        def wrapper(*args, **kwargs):
+            user_id = get_jwt_identity()
+            user = User.query.get(user_id)
+            if not user or user.role not in roles:
+                return jsonify({'message': 'Access denied'}), 403
+            return fn(*args, **kwargs)
+        return wrapper
+    return decorator
 
 
 @bp.route('/register', methods=['POST'])
@@ -66,8 +52,11 @@ def register():
     username = data.get('username')
     password = data.get('password')
 
-    if not username:
-        return jsonify({'message': 'Username is required'}), 400
+    if not username or not email or not password:
+        return jsonify({'message': 'All fields are required'}), 400
+
+    if len(password) < 8:
+        return jsonify({'message': 'Password must be at least 8 characters long'}), 400
 
     username_lower = username.lower()
 
@@ -110,18 +99,41 @@ def login():
 
     if user and user.password and check_password_hash(user.password, password):
         access_token = create_access_token(identity=user.id)
-        return jsonify({'access_token': access_token, 'username': user.username}), 200
+        return jsonify({'access_token': access_token, 'username': user.username, 'role': user.role}), 200
     else:
         return jsonify({'message': 'Invalid credentials'}), 401
 
 
+@bp.route('/profile', methods=['GET'])
+@jwt_required()
+def profile():
+    """
+    Get the current user's profile.
+
+    Returns:
+        200: User profile data.
+    """
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({'message': 'User not found'}), 404
+
+    return jsonify({
+        'id': user.id,
+        'username': user.username,
+        'email': user.email,
+        'role': user.role,
+        'created_at': user.created_at
+    }), 200
+
+
 @bp.route('/admin', methods=['GET'])
-@admin_required
+@role_required(['super_admin', 'news_admin', 'forum_admin'])
 def admin_dashboard():
     """
     Admin dashboard route.
 
-    - Restricted to users with admin privileges.
+    - Restricted to users with specific admin privileges.
     - Provides a success message for authorized access.
 
     Returns:
@@ -129,3 +141,16 @@ def admin_dashboard():
         403: Unauthorized access for non-admins.
     """
     return jsonify({'message': 'Welcome, admin!'}), 200
+
+
+@bp.route('/super-admin', methods=['GET'])
+@role_required(['super_admin'])
+def super_admin_dashboard():
+    """
+    Super admin-only dashboard route.
+
+    Returns:
+        200: Success message for super admins.
+        403: Unauthorized access for non-super-admins.
+    """
+    return jsonify({'message': 'Welcome, super admin!'}), 200

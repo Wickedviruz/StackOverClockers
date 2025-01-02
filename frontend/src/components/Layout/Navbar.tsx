@@ -2,12 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiSun, FiMoon, FiMenu, FiX } from 'react-icons/fi';
+import api from '../../services/api';
 
 const Navbar: React.FC = () => {
   const [theme, setTheme] = useState<string>(localStorage.getItem('theme') || 'light');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [role, setRole] = useState<string | null>(null); // Lagra användarens roll
 
   useEffect(() => {
+    // Hantera tema
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
@@ -15,6 +18,21 @@ const Navbar: React.FC = () => {
     }
     localStorage.setItem('theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    // Hämta användarens roll från backend
+    const fetchUserRole = async () => {
+      try {
+        const response = await api.get('/user/role'); // Backend endpoint för roll
+        setRole(response.data.role);
+      } catch (error) {
+        console.error('Failed to fetch user role:', error);
+        setRole(null); // Om begäran misslyckas
+      }
+    };
+
+    fetchUserRole();
+  }, []);
 
   const toggleTheme = () => {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
@@ -69,16 +87,16 @@ const Navbar: React.FC = () => {
             {/* Navigeringslänkar */}
             <div className="hidden md:flex space-x-6">
               <Link
+                to="/"
+                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+              >
+                Home
+              </Link>
+              <Link
                 to="/forum"
                 className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
               >
                 Forum
-              </Link>
-              <Link
-                to="/articles"
-                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
-              >
-                Artiklar
               </Link>
               <Link
                 to="/snippets"
@@ -90,8 +108,37 @@ const Navbar: React.FC = () => {
                 to="/news"
                 className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
               >
-                Nyheter
+                News
               </Link>
+              {/* Admin-meny */}
+              {role && (
+                <>
+                  {(role === 'forum_admin' || role === 'super_admin') && (
+                    <Link
+                      to="/admin/forum"
+                      className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+                    >
+                      Forum Admin
+                    </Link>
+                  )}
+                  {(role === 'news_admin' || role === 'super_admin') && (
+                    <Link
+                      to="/admin/news"
+                      className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+                    >
+                      News Admin
+                    </Link>
+                  )}
+                  {role === 'super_admin' && (
+                    <Link
+                      to="/admin/users"
+                      className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+                    >
+                      User Admin
+                    </Link>
+                  )}
+                </>
+              )}
             </div>
 
             {/* Hamburgerikon för mobil */}
@@ -118,18 +165,11 @@ const Navbar: React.FC = () => {
               Forum
             </Link>
             <Link
-              to="/articles"
+              to="/snippets"
               className="block text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Artiklar
-            </Link>
-            <Link
-              to="/reviews"
-              className="block text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Tester
+              Code snippets
             </Link>
             <Link
               to="/news"
@@ -138,6 +178,38 @@ const Navbar: React.FC = () => {
             >
               Nyheter
             </Link>
+            {/* Admin-meny för mobil */}
+            {role && (
+              <>
+                {(role === 'forum_admin' || role === 'super_admin') && (
+                  <Link
+                    to="/admin/forum"
+                    className="block text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Forum Admin
+                  </Link>
+                )}
+                {(role === 'news_admin' || role === 'super_admin') && (
+                  <Link
+                    to="/admin/news"
+                    className="block text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    News Admin
+                  </Link>
+                )}
+                {role === 'super_admin' && (
+                  <Link
+                    to="/admin/users"
+                    className="block text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    User Admin
+                  </Link>
+                )}
+              </>
+            )}
           </nav>
         </div>
       )}
