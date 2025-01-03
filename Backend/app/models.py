@@ -29,7 +29,7 @@ class User(db.Model):
     # Relationships
     threads = db.relationship('Thread', backref='author', lazy=True)  # One-to-many relationship with Thread
     snippets = db.relationship('Snippet', backref='author', lazy=True)  # One-to-many relationship with Snippet
-    posts = db.relationship('Post', backref='author', lazy=True)  # One-to-many relationship with Post
+    comments = db.relationship('Comment', backref='author', lazy=True)
     news = db.relationship('News', backref='author', lazy=True)  # One-to-many relationship with News
 
 # Create a unique index for lowercase usernames to ensure case-insensitive uniqueness
@@ -38,36 +38,72 @@ Index('ix_user_username_lower', func.lower(User.username), unique=True)
 
 class Category(db.Model):
     """
-    Category model represents discussion categories in the forum.
+    Represents a top-level category in the forum.
+
+    Attributes:
+        id (int): Primary key.
+        name (str): Name of the category.
+        subcategories (list[Subcategory]): Relationship to Subcategory objects.
     """
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), unique=True, nullable=False)  # Name of the category
-    description = db.Column(db.Text, nullable=True)  # Description of the category
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Timestamp when the category is created
-    threads = db.relationship('Thread', backref='category', lazy=True)  # One-to-many relationship with Thread
+    name = db.Column(db.String(100), nullable=False, unique=True)
+    subcategories = db.relationship('Subcategory', backref='category', lazy=True)
+
+
+class Subcategory(db.Model):
+    """
+    Represents a subcategory under a category.
+
+    Attributes:
+        id (int): Primary key.
+        name (str): Name of the subcategory.
+        category_id (int): Foreign key to Category.
+        threads (list[Thread]): Relationship to Thread objects.
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
+    threads = db.relationship('Thread', backref='subcategory', lazy=True)
 
 
 class Thread(db.Model):
     """
-    Thread model represents discussion threads within a category.
+    Represents a discussion thread within a subcategory.
+
+    Attributes:
+        id (int): Primary key.
+        title (str): Title of the thread.
+        content (str): Initial content of the thread.
+        created_at (datetime): Timestamp of thread creation.
+        user_id (int): Foreign key to User.
+        subcategory_id (int): Foreign key to Subcategory.
+        comments (list[Comment]): Relationship to Comment objects.
     """
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200), nullable=False)  # Title of the thread
-    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)  # Foreign key to Category
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Foreign key to User (author)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Timestamp when the thread is created
-    posts = db.relationship('Post', backref='thread', lazy=True)  # One-to-many relationship with Post
+    title = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    subcategory_id = db.Column(db.Integer, db.ForeignKey('subcategory.id'), nullable=False)
+    comments = db.relationship('Comment', backref='thread', lazy=True)
 
 
-class Post(db.Model):
+class Comment(db.Model):
     """
-    Post model represents individual messages within a thread.
+    Represents a comment within a thread.
+
+    Attributes:
+        id (int): Primary key.
+        content (str): The content of the comment.
+        created_at (datetime): Timestamp of comment creation.
+        user_id (int): Foreign key to User.
+        thread_id (int): Foreign key to Thread.
     """
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.Text, nullable=False)  # Content of the post
-    thread_id = db.Column(db.Integer, db.ForeignKey('thread.id'), nullable=False)  # Foreign key to Thread
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Foreign key to User (author)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Timestamp when the post is created
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    thread_id = db.Column(db.Integer, db.ForeignKey('thread.id'), nullable=False)
 
 
 class Snippet(db.Model):
@@ -92,19 +128,3 @@ class News(db.Model):
     content = db.Column(db.Text, nullable=False)  # Content of the news article
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Foreign key to User (author)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Timestamp when the news article is created
-
-class Comment(db.Model):
-    """
-    Comment model to store user comments on threads and news.
-    """
-    id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    thread_id = db.Column(db.Integer, db.ForeignKey('thread.id'), nullable=True)
-    news_id = db.Column(db.Integer, db.ForeignKey('news.id'), nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-    # Relationships
-    author = db.relationship('User', backref='comments')
-    thread = db.relationship('Thread', backref='comments')
-    news = db.relationship('News', backref='comments')

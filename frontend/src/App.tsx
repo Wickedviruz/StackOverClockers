@@ -3,6 +3,8 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 /* Admin */
+import ProtectedRoute from './components/ProtectedRoute';
+import AdminCategories from './components/Admin/AdminForum';
 import AdminNews from './components/Admin/AdminNews';
 import CreateNews from './pages/CreateNews';
 import EditNews from './pages/EditNews';
@@ -17,9 +19,10 @@ import Home from './pages/Home';
 import NewsDetail from './pages/NewsDetail';
 
 /* Forum */
-import ForumOverview from './pages/ForumOverview';
-import ThreadList from './pages/ThreadList';
-import ThreadView from './pages/ThreadView';
+import Forum from './pages/Forum';
+import Subcategory from './pages/Subcategory';
+import CreateThread from './pages/CreateThread';
+import ThreadPage from './pages/ThreadPage';
 
 /* CodeSnippets */
 import CodeSnippets from './pages/CodeSnippets';
@@ -44,6 +47,9 @@ const App: React.FC = () => {
           <Route path="/news/:id" element={<NewsDetail />} />
 
           {/* Admin routes */}
+          <Route path="/admin/forum" element={<ProtectedRoute allowedRoles={['forum_admin', 'super_admin']} />}>
+            <Route index element={<AdminCategories />} />
+          </Route>
           <Route path="/admin/news" element={<AdminNews />} />
           <Route path="/admin/news/create" element={<CreateNews />} />
           <Route path="/admin/news/edit/:id" element={<EditNews />} />
@@ -54,9 +60,10 @@ const App: React.FC = () => {
           <Route path="/oauth" element={<OAuthLogin />} />
 
           {/* Forum routes */}
-          <Route path="/forum" element={<ForumOverview />} />
-          <Route path="/forum/category/:id" element={<ThreadList />} />
-          <Route path="/forum/thread/:id" element={<ThreadView />} />
+          <Route path="/forum" element={<Forum />} />
+          <Route path="/forum/subcategory/:id" element={<Subcategory />} />
+          <Route path="/forum/subcategory/:id/create-thread" element={<CreateThread />} />
+          <Route path="/forum/thread/:threadId" element={<ThreadPage />} />
 
           {/* CodeSnippet routes */}
           <Route path="/snippets" element={<CodeSnippets />} />
