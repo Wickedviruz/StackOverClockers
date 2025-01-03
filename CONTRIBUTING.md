@@ -1,6 +1,6 @@
-# Contributing to StackOverClockers
+# Contributing to TechTalkers
 
-Thank you for your interest in contributing to StackOverClockers! Contributions are welcome and appreciated. Here are some guidelines to help you get started:
+Thank you for your interest in contributing to TechTalkers! Contributions are welcome and appreciated. Here are some guidelines to help you get started:
 
 ---
 

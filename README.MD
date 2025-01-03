@@ -1,4 +1,4 @@
-# StackOverClockers
+# TechTalkers
 
 [![All Issues](https://img.shields.io/github/issues/Wickedviruz/StackOverClockers.svg)](https://github.com/Wickedviruz/StackOverClockers/issues)
 [![Feature Requests](https://img.shields.io/github/issues/Wickedviruz/StackOverClockers/feature-request.svg)](https://github.com/Wickedviruz/StackOverClockers/issues?q=is%3Aopen+is%3Aissue+label%3Afeature-request)
@@ -7,7 +7,7 @@
 [![Closed Issues](https://img.shields.io/github/issues-closed/Wickedviruz/StackOverClockers.svg)](https://github.com/Wickedviruz/StackOverClockers/issues?q=is%3Aissue+is%3Aclosed)
 
 
-StackOverClockers is a full-stack application combining a powerful backend and a flexible frontend. The project is designed to be easy to use, customize, and extend.
+TechTalkers is a full-stack application combining a powerful backend and a flexible frontend. The project is designed to be easy to use, customize, and extend.
 
 ## Features
 - Flask backend with JWT authentication

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import api from '../services/api';
+import api from '../../services/api';
 
 const OAuthCallback: React.FC = () => {
   const location = useLocation();

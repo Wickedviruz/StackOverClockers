@@ -10,6 +10,7 @@ const Register: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [ConfirmPassword, setConfirmPassword] = useState ('');
+  const [acceptedPrivacyPolicy, setAcceptedPrivacyPolicy] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -67,7 +68,7 @@ const handleRegister = async (e: React.FormEvent) => {
   }
 
   try {
-    await api.post('/auth/register', { username, email, password });
+    await api.post('/auth/register', { username, email, password, accepted_privacy_policy: acceptedPrivacyPolicy });
     toast.success('Registration successful! You can now log in.', {
       position: 'top-right',
       autoClose: 3000,
@@ -158,6 +159,26 @@ const handleRegister = async (e: React.FormEvent) => {
               required
               className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#474747] dark:border-[#3B3B3B] dark:bg-[#1C1C1C] dark:focus:ring-white"
             />
+          </div>
+
+          {/* Privacy Policy */}
+          <div className="mb-4">
+            <label className="flex items-center text-sm">
+              <input
+                type="checkbox"
+                checked={acceptedPrivacyPolicy}
+                onChange={(e) => setAcceptedPrivacyPolicy(e.target.checked)}
+                required
+                className="mr-2"
+              />
+              I accept the{' '}
+              <a
+              href="/privacy-policy" 
+              className="text-[#D26000] hover:underline dark:text-[#D26000]"
+              >
+                Privacy Policy
+              </a>
+            </label>
           </div>
 
           {/* Registrera-knapp */}

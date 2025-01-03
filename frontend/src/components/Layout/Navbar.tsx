@@ -4,7 +4,7 @@ import { FiSun, FiMoon, FiMenu, FiX } from 'react-icons/fi';
 import { AuthContext } from '../../AuthContext';
 
 const Navbar: React.FC = () => {
-  const { user, logout } = useContext(AuthContext)!; // Hämta användardata och logout från AuthContext
+  const { user, logout } = useContext(AuthContext)!; 
   const [theme, setTheme] = useState<string>(localStorage.getItem('theme') || 'light');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -53,7 +53,7 @@ const Navbar: React.FC = () => {
             {user ? (
               <>
                 <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                  Välkommen, {user.username}
+                  Welcome, {user.username}
                 </span>
                 <button
                   onClick={handleLogout}

@@ -25,6 +25,9 @@ import ThreadView from './pages/ThreadView';
 import CodeSnippets from './pages/CodeSnippets';
 import CreateSnippet from './pages/CreateSnippet';
 
+/* Policy */
+import PrivacyPolicy from './pages/PrivacyPolicy';
+
 /* Navbar & Footer */
 import Navbar from './components/Layout/Navbar';
 import Footer from './components/Layout/Footer';
@@ -59,7 +62,8 @@ const App: React.FC = () => {
           <Route path="/snippets" element={<CodeSnippets />} />
           <Route path="/snippets/create" element={<CreateSnippet />} />
 
-          {/* Andra routes */}
+          {/* Policy */}
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         </Routes>
       </main>
       <Footer />

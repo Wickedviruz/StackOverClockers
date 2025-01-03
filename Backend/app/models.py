@@ -24,6 +24,7 @@ class User(db.Model):
         nullable=False,
     )  # User roles for permissions
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Timestamp when the user is created
+    accepted_privacy_policy = db.Column(db.Boolean, default=False, nullable=False)
 
     # Relationships
     threads = db.relationship('Thread', backref='author', lazy=True)  # One-to-many relationship with Thread

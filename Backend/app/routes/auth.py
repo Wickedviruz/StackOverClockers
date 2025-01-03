@@ -51,9 +51,10 @@ def register():
     email = data.get('email')
     username = data.get('username')
     password = data.get('password')
+    accepted_privacy_policy = data.get('accepted_privacy_policy', False)
 
-    if not username or not email or not password:
-        return jsonify({'message': 'All fields are required'}), 400
+    if not username or not email or not password or not accepted_privacy_policy:
+        return jsonify({'message': 'All fields, including privacy policy acceptance, are required'}), 400
 
     if len(password) < 8:
         return jsonify({'message': 'Password must be at least 8 characters long'}), 400
@@ -67,7 +68,13 @@ def register():
         return jsonify({'message': 'Email already registered'}), 400
 
     hashed_password = generate_password_hash(password)
-    new_user = User(email=email, username=username, username_lower=username_lower, password=hashed_password)
+    new_user = User(
+        email=email, 
+        username=username, 
+        username_lower=username_lower, 
+        password=hashed_password, 
+        accepted_privacy_policy=accepted_privacy_policy
+    )
     db.session.add(new_user)
     db.session.commit()
 
