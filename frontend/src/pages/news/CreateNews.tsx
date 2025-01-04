@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import api from '../services/api';
+import api from '../../services/api';
 
 const CreateNews: React.FC = () => {
   const [title, setTitle] = useState('');

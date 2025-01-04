@@ -18,12 +18,20 @@ class User(db.Model):
     password = db.Column(db.String(128), nullable=True)  # Password hash (nullable for OAuth users)
     oauth_provider = db.Column(db.String(50), nullable=True)  # OAuth provider name (e.g., Google, Facebook)
     oauth_id = db.Column(db.String(100), nullable=True)  # Unique OAuth user ID
+    display_name = db.Column(db.String(80), nullable=True, default="User")  # Default visningsnamn
+    title = db.Column(db.String(120), nullable=True)  # Kan vara tomt
+    location = db.Column(db.String(120), nullable=True)
+    about_me = db.Column(db.Text, nullable=True)
+    website = db.Column(db.String(255), nullable=True)
+    twitter = db.Column(db.String(80), nullable=True)
+    github = db.Column(db.String(80), nullable=True)
     role = db.Column(
         db.Enum('user', 'forum_admin', 'news_admin', 'super_admin', name='user_roles'),
         default='user',
         nullable=False,
     )  # User roles for permissions
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Timestamp when the user is created
+    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     accepted_privacy_policy = db.Column(db.Boolean, default=False, nullable=False)
 
     # Relationships

@@ -1,7 +1,7 @@
 // src/pages/EditNews.tsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import api from '../services/api';
+import api from '../../services/api';
 
 const EditNews: React.FC = () => {
   const { id } = useParams<{ id: string }>();

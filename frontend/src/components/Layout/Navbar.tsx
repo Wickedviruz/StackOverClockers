@@ -52,9 +52,12 @@ const Navbar: React.FC = () => {
 
             {user ? (
               <>
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                <Link
+                  to={`/profile`}
+                  className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:underline"
+                >
                   Welcome, {user.username}
-                </span>
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="text-sm font-medium text-white hover:text-white dark:hover:text-white bg-[#D26000] dark:bg-[#D26000] border border-gray-400 dark:border-[#3B3B3B] hover:border-gray-800 dark:hover:border-white px-2 py-1 rounded"

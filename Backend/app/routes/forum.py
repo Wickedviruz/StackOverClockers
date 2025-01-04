@@ -16,7 +16,6 @@ def get_categories():
         200: A list of categories and their subcategories.
     """
     categories = Category.query.all()
-    print(f"Categories from DB: {categories}")
     result = [{
         'id': category.id,
         'name': category.name,
@@ -26,7 +25,6 @@ def get_categories():
         } for subcategory in category.subcategories]
     } for category in categories]
 
-    print(f"Serialized categories: {result}")
     return jsonify(result), 200
 
 

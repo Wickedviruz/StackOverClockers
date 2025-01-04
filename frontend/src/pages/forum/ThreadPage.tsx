@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { getThreadDetails, createComment } from '../services/api';
+import { getThreadDetails, createComment } from '../../services/api';
 
 const ThreadPage: React.FC = () => {
   const { threadId } = useParams<{ threadId: string }>();
@@ -44,7 +44,11 @@ const ThreadPage: React.FC = () => {
   };
 
   if (!thread) {
-    return <p>Loading thread...</p>;
+    return(
+      <div className="min-h-screen bg-[#EDECEB] dark:bg-[#101010] text-gray-900 dark:text-gray-100 flex items-center justify-center">
+        <p>Loading thread...</p>
+      </div>
+    );
   }
 
   return (

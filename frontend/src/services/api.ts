@@ -15,18 +15,7 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// API för forum
-export const getForumCategories = async () => {
-  try {
-    const response = await api.get('/forum/categories');
-    console.log('Backend response in frontend:', response.data); // Logga backend-svaret
-    return response.data || [];
-  } catch (error) {
-    console.error('Error fetching categories:', error);
-    throw error;
-  }
-};
-
+// API för forum -- admin
 export const createCategory = async (name: string) => {
   try {
     const response = await api.post('/forum/categories', { name });
@@ -47,7 +36,18 @@ export const createSubcategory = async (categoryId: number, name: string) => {
   }
 };
 
-// Hämta trådar i en specifik underkategori
+// API för forum
+export const getForumCategories = async () => {
+  try {
+    const response = await api.get('/forum/categories');
+    console.log('Backend response in frontend:', response.data); // Logga backend-svaret
+    return response.data || [];
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    throw error;
+  }
+};
+
 export const getThreadsInSubcategory = async (subcategoryId: number) => {
   try {
     const response = await api.get(`/forum/subcategories/${subcategoryId}/threads`);
@@ -58,7 +58,6 @@ export const getThreadsInSubcategory = async (subcategoryId: number) => {
   }
 };
 
-// Skapa en ny tråd
 export const createThread = async (subcategoryId: number, title: string, content: string) => {
   try {
     const response = await api.post('/forum/threads', { subcategory_id: subcategoryId, title, content });
@@ -88,5 +87,39 @@ export const createComment = async (threadId: number, content: string) => {
     throw error;
   }
 };
+
+
+// API för användarprofiler
+export const getUserProfile = async (username: string) => {
+  try {
+    const response = await api.get(`/profile/users/${username}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    throw error;
+  }
+};
+
+export const updateUserProfile = async (
+  username: string,
+  data: {
+    displayName?: string;
+    title?: string;
+    location?: string;
+    aboutMe?: string;
+    websiteLink?: string;
+    twitterLink?: string;
+    githubLink?: string;
+  }
+) => {
+  try {
+    const response = await api.put(`/profile/users/${username}`, data);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    throw error;
+  }
+};
+
 
 export default api;

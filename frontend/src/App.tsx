@@ -6,27 +6,28 @@ import { Routes, Route } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminCategories from './components/Admin/AdminForum';
 import AdminNews from './components/Admin/AdminNews';
-import CreateNews from './pages/CreateNews';
-import EditNews from './pages/EditNews';
+import CreateNews from './pages/news/CreateNews';
+import EditNews from './pages/news/EditNews';
 
-/* Auth */
+/* Auth / profile */
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import OAuthLogin from './components/Auth/OAuthLogin';
+import Profile from './pages/Profile';
 
 /* Home */
 import Home from './pages/Home';
-import NewsDetail from './pages/NewsDetail';
+import NewsDetail from './pages/news/NewsDetail';
 
 /* Forum */
-import Forum from './pages/Forum';
-import Subcategory from './pages/Subcategory';
-import CreateThread from './pages/CreateThread';
-import ThreadPage from './pages/ThreadPage';
+import Forum from './pages/forum/Forum';
+import Subcategory from './pages/forum/Subcategory';
+import CreateThread from './pages/forum/CreateThread';
+import ThreadPage from './pages/forum/ThreadPage';
 
 /* CodeSnippets */
-import CodeSnippets from './pages/CodeSnippets';
-import CreateSnippet from './pages/CreateSnippet';
+import CodeSnippets from './pages/snippet/CodeSnippets';
+import CreateSnippet from './pages/snippet/CreateSnippet';
 
 /* Policy */
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -54,10 +55,11 @@ const App: React.FC = () => {
           <Route path="/admin/news/create" element={<CreateNews />} />
           <Route path="/admin/news/edit/:id" element={<EditNews />} />
 
-          {/* Auth routes */}
+          {/* Auth / profile routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/oauth" element={<OAuthLogin />} />
+          <Route path='/profile' element={<Profile />} />
 
           {/* Forum routes */}
           <Route path="/forum" element={<Forum />} />

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import api from '../services/api';
+import api from '../../services/api';
 
 interface Thread {
   id: number;
@@ -34,7 +34,11 @@ const SubcategoryThreads: React.FC = () => {
   }, [id]);
 
   if (loading) {
-    return <p className="text-center mt-4">Loading threads...</p>;
+    return(
+      <div className="min-h-screen bg-[#EDECEB] dark:bg-[#101010] text-gray-900 dark:text-gray-100 flex items-center justify-center">
+        <p>Loading threads...</p>
+      </div>
+    );
   }
 
   if (error) {

@@ -32,6 +32,9 @@ def role_required(roles):
         return wrapper
     return decorator
 
+#=======================================
+# Auth section
+#=======================================
 
 @bp.route('/register', methods=['POST'])
 def register():
@@ -111,28 +114,9 @@ def login():
         return jsonify({'message': 'Invalid credentials'}), 401
 
 
-@bp.route('/profile', methods=['GET'])
-@jwt_required()
-def profile():
-    """
-    Get the current user's profile.
-
-    Returns:
-        200: User profile data.
-    """
-    user_id = get_jwt_identity()
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({'message': 'User not found'}), 404
-
-    return jsonify({
-        'id': user.id,
-        'username': user.username,
-        'email': user.email,
-        'role': user.role,
-        'created_at': user.created_at
-    }), 200
-
+#=======================================
+# Admin secitons
+#=======================================
 
 @bp.route('/admin', methods=['GET'])
 @role_required(['super_admin', 'news_admin', 'forum_admin'])
