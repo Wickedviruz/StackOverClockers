@@ -36,7 +36,7 @@ def create_app():
     app.register_blueprint(snippets.bp) #Codesnippets blueprints
     app.register_blueprint(chatgpt.bp)  #Chatgpt blueprints
     app.register_blueprint(oauth.bp)    #OAuth blueprints
-    app.register_blueprint(news.bp)    #OAuth blueprints
+    app.register_blueprint(news.bp)    #News blueprints
     app.register_blueprint(profile.bp)    #Profile blueprints
 
     return app
