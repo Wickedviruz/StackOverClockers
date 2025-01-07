@@ -81,14 +81,14 @@ const ThreadPage: React.FC = () => {
           <textarea
             value={commentContent}
             onChange={(e) => setCommentContent(e.target.value)}
-            className="w-full p-3 border rounded mt-2"
+            className="w-full p-3 pr-10 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#474747] dark:border-[#3B3B3B] dark:bg-[#1C1C1C] dark:focus:ring-white dark:text-white"
             rows={4}
             placeholder="Write your comment here..."
           />
           <button
             onClick={handleCommentSubmit}
             disabled={loading}
-            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+            className="px-2 py-1 bg-[#D26000] text-white rounded hover:bg-[#FF7505] focus:outline-none focus:ring-2 focus:ring-[#FF7505]"
           >
             {loading ? 'Posting...' : 'Post Comment'}
           </button>

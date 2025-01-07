@@ -15,12 +15,12 @@ from sqlalchemy import func
 # Internal imports
 from .. import db
 from app.models import Snippet, User
-from ..decorators import snippet_author_or_admin_required
+from ..decorators import resource_author_or_admin_required
 
 # Define the Blueprint
 bp = Blueprint('snippets', __name__, url_prefix='/snippets')
 
-@bp.route('', methods=['GET'], strict_slashes=False)
+@bp.route('', methods=['GET'], strict_slashes=False, endpoint='get_snippets')
 @jwt_required(optional=True)
 def get_snippets():
     """
@@ -58,7 +58,7 @@ def get_snippets():
     return jsonify(result), 200
 
 
-@bp.route('', methods=['POST'], strict_slashes=False)
+@bp.route('', methods=['POST'], strict_slashes=False, endpoint='post_snippets')
 @jwt_required(optional=True)
 def post_snippets():
     """
@@ -98,7 +98,7 @@ def post_snippets():
 
 
 
-@bp.route('/<int:snippet_id>', methods=['GET'], strict_slashes=False)
+@bp.route('/<int:snippet_id>', methods=['GET'], strict_slashes=False, endpoint='get_snippet')
 @jwt_required(optional=True)
 def get_snippet(snippet_id):
     """
@@ -124,9 +124,9 @@ def get_snippet(snippet_id):
     return jsonify(result), 200
 
 
-@bp.route('/<int:snippet_id>', methods=['PUT'], strict_slashes=False)
+@bp.route('/<int:snippet_id>', methods=['PUT'], strict_slashes=False, endpoint='update_snippet')
 @jwt_required()
-@snippet_author_or_admin_required
+@resource_author_or_admin_required
 def update_snippet(snippet_id):
     """
     Update a snippet's details.
@@ -151,9 +151,9 @@ def update_snippet(snippet_id):
     return jsonify({'message': 'Snippet updated successfully'}), 200
 
 
-@bp.route('/<int:snippet_id>', methods=['DELETE'], strict_slashes=False)
+@bp.route('/<int:snippet_id>', methods=['DELETE'], strict_slashes=False, endpoint='delete_snippet')
 @jwt_required()
-@snippet_author_or_admin_required
+@resource_author_or_admin_required
 def delete_snippet(snippet_id):
     """
     Delete a snippet.

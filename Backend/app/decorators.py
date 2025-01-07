@@ -1,58 +1,39 @@
-"""
-Decorators for custom access control.
-
-This module provides:
-- A decorator to ensure that only snippet authors or admin users can access specific routes.
-"""
-
 from functools import wraps
-from flask import jsonify
+from flask import jsonify, current_app
 from flask_jwt_extended import get_jwt_identity
 
-from app.models import User, Snippet
+from app.models import User
 
 
-def snippet_author_or_admin_required(f):
-    """
-    Restrict route access to snippet authors or admin users.
+def resource_author_or_admin_required(model=None, role_check_field='user_id'):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            try:
+                user_id = get_jwt_identity()
+                if not user_id:
+                    return jsonify({'message': 'Authentication required'}), 401
 
-    This decorator:
-    - Checks if the user is authenticated.
-    - Ensures the user exists in the database.
-    - Validates that the snippet exists.
-    - Verifies that the user is either the snippet's author or an admin (any admin role).
+                user = User.query.get(user_id)
+                if not user:
+                    return jsonify({'message': 'User not found'}), 404
 
-    Args:
-        f (function): The route function to wrap.
+                if model:
+                    resource_id = kwargs.get('resource_id')
+                    resource = model.query.get(resource_id)
+                    if not resource:
+                        return jsonify({'message': f'{model.__name__} not found'}), 404
 
-    Returns:
-        function: The wrapped route function.
-        401: If the user is not authenticated.
-        404: If the user or snippet is not found.
-        403: If the user is unauthorized to access the resource.
-    """
-    @wraps(f)
-    def decorated_function(snippet_id, *args, **kwargs):
-        # Get the current user's ID from the JWT
-        user_id = get_jwt_identity()
-        if not user_id:
-            return jsonify({'message': 'Authentication required'}), 401
+                    if getattr(resource, role_check_field) != user_id and user.role not in current_app.config.get('ADMIN_ROLES', []):
+                        return jsonify({'message': 'Unauthorized'}), 403
 
-        # Retrieve the user from the database
-        user = User.query.get(user_id)
-        if not user:
-            return jsonify({'message': 'User not found'}), 404
+                return f(*args, **kwargs)
+            except Exception as e:
+                current_app.logger.error(f"Error in decorator: {str(e)}")
+                return jsonify({'message': 'Internal error'}), 500
+        return decorated_function
+    return decorator
 
-        # Retrieve the snippet from the database
-        snippet = Snippet.query.get(snippet_id)
-        if not snippet:
-            return jsonify({'message': 'Snippet not found'}), 404
 
-        # Check if the user is either the snippet's author or an admin
-        if snippet.user_id != user_id and user.role not in ['forum_admin', 'news_admin', 'super_admin']:
-            return jsonify({'message': 'Unauthorized'}), 403
-
-        # Proceed with the wrapped function
-        return f(snippet_id, *args, **kwargs)
-
-    return decorated_function
+def is_admin(user):
+    return user.role in current_app.config.get('ADMIN_ROLES', [])
