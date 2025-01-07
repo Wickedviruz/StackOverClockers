@@ -25,3 +25,11 @@ class Config:
 
     # Roles config
     ADMIN_ROLES = ['forum_admin', 'news_admin', 'super_admin']
+
+class TestConfig(Config):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'  # In-memory databas för tester
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    JWT_SECRET_KEY = os.getenv('test_secret_key', 'test_secret_key')  # En separat nyckel för tester
+    CACHE_TYPE = 'null'  # Inaktivera cache för tester
+    WTF_CSRF_ENABLED = False  # Om du använder CSRF-skydd, inaktivera det för tester

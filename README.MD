@@ -15,6 +15,8 @@ TechTalkers is a full-stack application combining a powerful backend and a flexi
 - Clear and modular project structure
 - Built-in testing and CI/CD support
 
+testings is done by standing in the folder of backend, and run python -m pytest -v
+
 ## Installation
 
 ### Backend

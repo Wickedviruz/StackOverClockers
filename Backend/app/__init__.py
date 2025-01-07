@@ -20,13 +20,13 @@ jwt = JWTManager()
 limiter = Limiter(key_func=get_remote_address)
 cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
 
-def create_app():
+def create_app(config_class=Config):
     """
     Factory function to create and configure the Flask application.
     This pattern supports testing and scalability by creating isolated app instances.
     """
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config.from_object(config_class)
 
     # Initialize extensions with the app instance
     db.init_app(app)
