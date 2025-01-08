@@ -60,3 +60,36 @@ class CommentSchema(Schema):
             "validator_failed": "Comment content must be between 10 and 1000 characters."
         }
     )
+
+
+class SnippetsSchema(Schema):
+    content = fields.String(
+        required=True,
+        validate=validate.Length(min=10, max=1000),
+        error_messages={
+            "required": "Comment content is required.",
+            "null": "Comment content cannot be null.",
+            "validator_failed": "Comment content must be between 10 and 1000 characters."
+        }
+    )
+
+
+def validate_registration(data):
+    errors = {}
+    if not data.get('username'):
+        errors['username'] = 'Username is required.'
+    if not data.get('email'):
+        errors['email'] = 'Email is required.'
+    if not data.get('password') or len(data['password']) < 8:
+        errors['password'] = 'Password must be at least 8 characters long.'
+    if not data.get('accepted_privacy_policy'):
+        errors['accepted_privacy_policy'] = 'Privacy policy must be accepted.'
+    return errors
+
+def validate_login(data):
+    errors = {}
+    if not data.get('username'):
+        errors['username'] = 'Username is required.'
+    if not data.get('password'):
+        errors['password'] = 'Password is required.'
+    return errors

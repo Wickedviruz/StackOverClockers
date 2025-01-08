@@ -11,6 +11,7 @@ from flasgger import Swagger
 
 # Local modules imports
 from app.logger import create_logger
+from app.error_handlers import register_error_handlers
 from config import Config
 
 # Initialize extensions
@@ -36,11 +37,11 @@ def create_app(config_class=Config):
     cache.init_app(app)
     swagger = Swagger(app)
     CORS(app, supports_credentials=True)
+    register_error_handlers(app)
 
     # Create and config logger
     logger= create_logger()
     app.logger = logger
-    logger.info("Flask application initialized")
 
 
     from .routes import auth, forum, snippets, chatgpt, oauth, news, profile

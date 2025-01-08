@@ -26,6 +26,10 @@ class Config:
     # Roles config
     ADMIN_ROLES = ['forum_admin', 'news_admin', 'super_admin']
 
+    # Profile picutre
+    UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # Max 16 MB
+
 class TestConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'  # In-memory databas för tester

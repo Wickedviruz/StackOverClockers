@@ -22,6 +22,7 @@ class User(db.Model):
     title = db.Column(db.String(120), nullable=True)  # Kan vara tomt
     location = db.Column(db.String(120), nullable=True)
     about_me = db.Column(db.Text, nullable=True)
+    profile_picture = db.Column(db.String(255), nullable=True, default='default.jpg')
     website = db.Column(db.String(255), nullable=True)
     twitter = db.Column(db.String(80), nullable=True)
     github = db.Column(db.String(80), nullable=True)
@@ -65,11 +66,13 @@ class Subcategory(db.Model):
     Attributes:
         id (int): Primary key.
         name (str): Name of the subcategory.
+        description (str): Description of the subcategory.
         category_id (int): Foreign key to Category.
         threads (list[Thread]): Relationship to Thread objects.
     """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=True)  # New column for descriptions
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
     threads = db.relationship('Thread', backref='subcategory', lazy=True)
 

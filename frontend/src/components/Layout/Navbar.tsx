@@ -108,12 +108,6 @@ const Navbar: React.FC = () => {
               >
                 Code snippets
               </Link>
-              <Link
-                to="/news"
-                className="flex items-center justify-center h-12 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-[#EDECEB] dark:hover:bg-[#282828] px-4"
-              >
-                News
-              </Link>
               {user?.role && (
                 <>
                   {(user.role === 'forum_admin' || user.role === 'super_admin') && (

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast} from 'react-toastify'
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 import 'react-toastify/dist/ReactToastify.css'
 import api from '../../services/api';
 
@@ -12,6 +13,8 @@ const Register: React.FC = () => {
   const [ConfirmPassword, setConfirmPassword] = useState ('');
   const [acceptedPrivacyPolicy, setAcceptedPrivacyPolicy] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
 const validatePassword = (password: string): string | null => {
@@ -97,6 +100,14 @@ const handleRegister = async (e: React.FormEvent) => {
   }
 };
 
+const togglePasswordVisibility = () => {
+  setShowPassword((prev) => !prev);
+};
+
+const toggleConfirmPasswordVisibility = () => {
+  setShowConfirmPassword((prev) => !prev);
+};
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-[#101010] text-gray-900 dark:text-gray-100">
        <ToastContainer />
@@ -138,27 +149,47 @@ const handleRegister = async (e: React.FormEvent) => {
             <label htmlFor="password" className="block text-sm font-medium mb-2">
               Password:
             </label>
+            <div className="relative">
             <input
               id="password"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#474747] dark:border-[#3B3B3B] dark:bg-[#1C1C1C] dark:focus:ring-white"
+              className="w-full p-3 pr-10 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#474747] dark:border-[#3B3B3B] dark:bg-[#1C1C1C] dark:focus:ring-white dark:text-white"
             />
+            <button
+              type="button"
+              onClick={togglePasswordVisibility}
+              className="absolute inset-y-0 right-3 flex items-center text-gray-600 dark:text-gray-300 focus:outline-none"
+              aria-label="Toggle password visibility"
+            >
+              {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+            </button>
+            </div>
           </div>
           <div className="mb-6">
             <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2">
               Confirm password:
             </label>
+            <div className="relative">
             <input
               id="ConfirmPassword"
-              type="password"
+              type={showConfirmPassword ? 'text' : 'password'}
               value={ConfirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
               className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#474747] dark:border-[#3B3B3B] dark:bg-[#1C1C1C] dark:focus:ring-white"
             />
+            <button
+              type="button"
+              onClick={toggleConfirmPasswordVisibility}
+              className="absolute inset-y-0 right-3 flex items-center text-gray-600 dark:text-gray-300 focus:outline-none"
+              aria-label="Toggle password visibility"
+            >
+              {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+            </button>
+            </div>
           </div>
 
           {/* Privacy Policy */}
