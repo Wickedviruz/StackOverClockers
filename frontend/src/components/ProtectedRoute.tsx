@@ -1,26 +1,28 @@
 import React, { useContext } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
 
 interface ProtectedRouteProps {
-  allowedRoles: string[]; // Tillåtna roller, t.ex. ['forum_admin', 'super_admin']
+  allowedRoles?: string[]; // Tillåtna roller, t.ex. ['forum_admin', 'super_admin']
+  children: React.ReactNode; // Barn-komponenter
+  fallback?: React.ReactNode; // Alternativ komponent att visa om rollen är ogiltig
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles = [], children, fallback = null }) => {
   const { user } = useContext(AuthContext)!;
 
   if (!user) {
     // Om användaren inte är inloggad, skicka till inloggningssidan
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" replace />;
   }
 
-  if (!allowedRoles.includes(user.role)) {
-    // Om användaren inte har rätt roll, visa en 403-sida eller skicka till hemsidan
-    return <Navigate to="/" />;
+  if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
+    // Om användaren inte har rätt roll
+    return fallback ? <>{fallback}</> : <Navigate to="/" replace />;
   }
 
-  // Visa barnkomponenterna om användaren är tillåten
-  return <Outlet />;
+  // Returnera barn-komponenten direkt om tillåtet
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;

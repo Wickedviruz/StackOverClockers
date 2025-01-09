@@ -109,7 +109,7 @@ const toggleConfirmPasswordVisibility = () => {
 };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-[#101010] text-gray-900 dark:text-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-[#EDECEB] dark:bg-[#101010] text-gray-900 dark:text-gray-100">
        <ToastContainer />
       <div className="w-full max-w-md bg-white dark:bg-[#1C1C1C] rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-semibold text-center mb-6">Register</h2>

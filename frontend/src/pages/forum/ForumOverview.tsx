@@ -28,7 +28,7 @@ const ForumOverview: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-[#101010] text-gray-900 dark:text-gray-100">
+    <div className="min-h-screen bg-[#EDECEB] dark:bg-[#101010] text-gray-900 dark:text-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="text-3xl font-semibold mb-6">Forum</h1>
 

@@ -48,9 +48,7 @@ const App: React.FC = () => {
           <Route path="/news/:id" element={<NewsDetail />} />
 
           {/* Admin routes */}
-          <Route path="/admin/forum" element={<ProtectedRoute allowedRoles={['forum_admin', 'super_admin']} />}>
-            <Route index element={<AdminCategories />} />
-          </Route>
+          <Route path="/admin/forum" element={<ProtectedRoute allowedRoles={['forum_admin', 'super_admin']} fallback={<h1>403 - Access Denied</h1>}> <AdminCategories /> </ProtectedRoute>}/>
           <Route path="/admin/news" element={<AdminNews />} />
           <Route path="/admin/news/create" element={<CreateNews />} />
           <Route path="/admin/news/edit/:id" element={<EditNews />} />
@@ -64,12 +62,12 @@ const App: React.FC = () => {
           {/* Forum routes */}
           <Route path="/forum" element={<Forum />} />
           <Route path="/forum/subcategory/:id" element={<Subcategory />} />
-          <Route path="/forum/subcategory/:id/create-thread" element={<CreateThread />} />
+          <Route path="/forum/subcategory/:id/create-thread" element={<CreateThread/>}/>
           <Route path="/forum/thread/:threadId" element={<ThreadPage />} />
 
           {/* CodeSnippet routes */}
           <Route path="/snippets" element={<CodeSnippets />} />
-          <Route path="/snippets/create" element={<CreateSnippet />} />
+          <Route path="/snippets/create" element={<ProtectedRoute><CreateSnippet /></ProtectedRoute>}/>
 
           {/* Policy */}
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />

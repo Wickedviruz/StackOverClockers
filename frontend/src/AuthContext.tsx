@@ -1,4 +1,3 @@
-// frontend/src/AuthContext.tsx
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
 
@@ -13,6 +12,7 @@ interface AuthContextType {
   login: (username: string, password: string) => Promise<void>;
   register: (username: string, email: string, password: string, acceptedPrivacyPolicy: boolean) => Promise<void>;
   logout: () => void;
+  checkAuth: () => boolean; // Ny funktion för att kontrollera om användaren är autentiserad
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -36,27 +36,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = async (username: string, password: string) => {
-    
-    try {
-      const response = await axios.post(`${API_URL}/auth/login`, { username, password });
-      const { access_token, username: fetchedUsername, role } = response.data;
-  
-      localStorage.setItem('access_token', access_token);
-      localStorage.setItem('username', fetchedUsername);
-      localStorage.setItem('role', role);
-  
-      setUser({ username: fetchedUsername, role });
-      console.log('Login successful, user set:', { username: fetchedUsername, role });
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error;
-    }
+    const response = await axios.post(`${API_URL}/auth/login`, { username, password });
+    const { access_token, username: fetchedUsername, role } = response.data;
+
+    localStorage.setItem('access_token', access_token);
+    localStorage.setItem('username', fetchedUsername);
+    localStorage.setItem('role', role);
+
+    setUser({ username: fetchedUsername, role });
   };
-  
 
   const register = async (username: string, email: string, password: string, acceptedPrivacyPolicy: boolean) => {
     await axios.post(`${API_URL}/auth/register`, { username, email, password, accepted_privacy_policy: acceptedPrivacyPolicy });
-    await login(username, password); // Logga in automatiskt efter registrering
+    await login(username, password);
   };
 
   const logout = () => {
@@ -66,8 +58,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUser(null);
   };
 
+  const checkAuth = (): boolean => {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      logout();
+      return false;
+    }
+    return true;
+  };
+
   return (
-    <AuthContext.Provider value={{ user, setUser, login, register, logout }}>
+    <AuthContext.Provider value={{ user, setUser, login, register, logout, checkAuth }}>
       {children}
     </AuthContext.Provider>
   );
